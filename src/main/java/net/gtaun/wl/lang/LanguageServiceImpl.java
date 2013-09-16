@@ -18,6 +18,8 @@
 
 package net.gtaun.wl.lang;
 
+import java.io.File;
+
 import net.gtaun.shoebill.Shoebill;
 import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.player.PlayerLifecycleHolder;
@@ -66,6 +68,12 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	{
 		PlayerLanguageContext context = contexts.getObject(player, PlayerLanguageContext.class);
 		context.setLanguage(lang);
+	}
+
+	@Override
+	public LocalizedStringSet createStringSet(File dir)
+	{
+		return new LocalizedStringSet(this, dir);
 	}
 	
 	private PlayerEventHandler playerEventHandler = new PlayerEventHandler()

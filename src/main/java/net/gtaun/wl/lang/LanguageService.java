@@ -18,6 +18,8 @@
 
 package net.gtaun.wl.lang;
 
+import java.io.File;
+
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.shoebill.service.Service;
 
@@ -26,4 +28,6 @@ public interface LanguageService extends Service
 	Language getPlayerLanguage(Player player);
 
 	void setPlayerLanguage(Player player, Language lang);
+	
+	LocalizedStringSet createStringSet(File dir);
 }
