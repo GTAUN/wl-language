@@ -42,12 +42,12 @@ public class LocalizedStringSet
 		{
 			String match = matcher.group();
 			String key = match.substring(1, match.length()-1);
-			processed = processed.replace(match, getString(lang, key));
+			processed = processed.replace(match, get(lang, key));
 		}
 		return processed;
 	}
 	
-	public String getString(Language lang, String key)
+	public String get(Language lang, String key)
 	{
 		String str = configs.get(lang).getString(key, null);
 		if (str != null) return processString(lang, str);
@@ -58,17 +58,17 @@ public class LocalizedStringSet
 			if (str != null) return processString(lang, str);
 		}
 		
-		return key;
+		return "#" + key + "#";
 	}
 	
-	public String getString(Player player, String key)
+	public String get(Player player, String key)
 	{
-		return getString(languageService.getPlayerLanguage(player), key);
+		return get(languageService.getPlayerLanguage(player), key);
 	}
 	
 	public String format(Player player, String key, Object... objects)
 	{
-		String format = getString(player, key);
+		String format = get(player, key);
 		return String.format(format, objects);
 	}
 }
