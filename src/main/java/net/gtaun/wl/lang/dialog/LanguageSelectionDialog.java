@@ -54,7 +54,8 @@ public class LanguageSelectionDialog extends AbstractListDialog
 		for (final Language lang : languages.values())
 		{
 			final float coverPercent = languageService.getCoverPercent(lang) * 100.0f;
-			String item = String.format("%1$s(%2$1.1f%% Completed)", DialogUtils.rightPad(lang.getName(), 24, 8), coverPercent);
+			String item = String.format("%1$s(%2$s, %3$1.1f%%)",
+					DialogUtils.rightPad(lang.getNativeCp1252()+" ", 16, 8), lang.getName(), coverPercent);
 			dialogListItems.add(new DialogListItem(item)
 			{
 				@Override
