@@ -18,11 +18,16 @@
 
 package net.gtaun.wl.lang.dialog;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
+
 import net.gtaun.shoebill.Shoebill;
 import net.gtaun.shoebill.common.dialog.AbstractDialog;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
 import net.gtaun.wl.common.dialog.AbstractListDialog;
+import net.gtaun.wl.common.dialog.DialogUtils;
 import net.gtaun.wl.lang.Language;
 import net.gtaun.wl.lang.LanguageService;
 
@@ -32,9 +37,25 @@ public class LanguageSelectionDialog extends AbstractListDialog
 	{
 		super(player, shoebill, eventManager, parentDialog);
 		this.caption = "Please select your language";
+		
+		Map<Float, Language> languages = new TreeMap<Float, Language>(new Comparator<Float>()
+		{
+			@Override
+			public int compare(Float o1, Float o2)
+			{
+				return o1 < o2 ? 1 : -1;
+			}
+		});
 		for (final Language lang : Language.values())
 		{
-			dialogListItems.add(new DialogListItem(lang.getName())
+			languages.put(languageService.getCoverPercent(lang) - (lang.ordinal() / 1000000.0f), lang);
+		}
+		
+		for (final Language lang : languages.values())
+		{
+			final float coverPercent = languageService.getCoverPercent(lang) * 100.0f;
+			String item = String.format("%1$s(%2$1.1f%% Completed)", DialogUtils.rightPad(lang.getName(), 24, 8), coverPercent);
+			dialogListItems.add(new DialogListItem(item)
 			{
 				@Override
 				public void onItemSelect()

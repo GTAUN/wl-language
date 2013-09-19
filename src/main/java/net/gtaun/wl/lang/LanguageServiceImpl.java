@@ -33,6 +33,7 @@ import net.gtaun.wl.lang.dialog.LanguageSelectionDialog;
 public class LanguageServiceImpl extends AbstractShoebillContext implements LanguageService
 {
 	private PlayerLifecycleHolder contexts;
+	private LocalizedStringStatistic statistic;
 	
 	
 	public LanguageServiceImpl(Shoebill shoebill, EventManager rootEventManager)
@@ -45,6 +46,8 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	protected void onInit()
 	{
 		contexts = new PlayerLifecycleHolder(shoebill, eventManager);
+		statistic = new LocalizedStringStatistic();
+		
 		contexts.registerClass(PlayerLanguageContext.class);
 		
 		eventManager.registerHandler(PlayerConnectEvent.class, playerEventHandler, HandlerPriority.NORMAL);
@@ -73,7 +76,27 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	@Override
 	public LocalizedStringSet createStringSet(File dir)
 	{
-		return new LocalizedStringSet(this, dir);
+		LocalizedStringSet stringSet = new LocalizedStringSet(this, dir);
+		statistic.add(stringSet);
+		return stringSet;
+	}
+
+	@Override
+	public int getStrings(Language lang)
+	{
+		return statistic.getStrings(lang);
+	}
+
+	@Override
+	public int getMaxStrings()
+	{
+		return statistic.getMaxStrings();
+	}
+
+	@Override
+	public float getCoverPercent(Language lang)
+	{
+		return statistic.getCoverPercent(lang);
 	}
 	
 	private PlayerEventHandler playerEventHandler = new PlayerEventHandler()

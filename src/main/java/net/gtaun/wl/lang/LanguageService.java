@@ -30,4 +30,10 @@ public interface LanguageService extends Service
 	void setPlayerLanguage(Player player, Language lang);
 	
 	LocalizedStringSet createStringSet(File dir);
+	
+	int getStrings(Language lang);
+	
+	int getMaxStrings();
+
+	float getCoverPercent(Language lang);
 }
