@@ -24,7 +24,6 @@ import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.player.PlayerLifecycleHolder;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
-import net.gtaun.wl.lang.LanguageService.SelectLanguageCallback;
 import net.gtaun.wl.lang.dialog.LanguageSelectionDialog;
 import net.gtaun.wl.lang.event.PlayerChangeLanguageEvent;
 
