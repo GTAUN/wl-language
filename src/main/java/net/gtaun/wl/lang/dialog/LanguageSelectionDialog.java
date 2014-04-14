@@ -54,7 +54,7 @@ public class LanguageSelectionDialog
 						{
 							player.playSound(1083, player.getLocation());
 							service.setPlayerLanguage(player, lang);
-							callback.onSelectLanguage(player, lang);
+							if (callback != null) callback.onSelectLanguage(player, lang);
 						});
 					});
 				})
