@@ -18,7 +18,6 @@
 
 package net.gtaun.wl.lang;
 
-import net.gtaun.shoebill.Shoebill;
 import net.gtaun.shoebill.common.player.AbstractPlayerContext;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
@@ -28,7 +27,7 @@ public class PlayerLanguageContext extends AbstractPlayerContext
 	private Language language;
 	
 	
-	public PlayerLanguageContext(Shoebill shoebill, EventManager rootEventManager, Player player)
+	public PlayerLanguageContext(EventManager rootEventManager, Player player)
 	{
 		super(rootEventManager, player);
 	}
