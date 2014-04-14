@@ -38,12 +38,12 @@ public class LanguageSelectionDialog
 		Arrays.stream(Language.values()).forEach((lang) ->
 		{
 			float coverPercent = service.getCoverPercent(lang) * 100.0f;
-			languages.put(coverPercent, lang);
+			if (coverPercent > 0.0f) languages.put(coverPercent, lang);
 		});
 		
 		return WlListDialog.create(player, rootEventManager)
 			.caption("Please select your language")
-			.execute((WlListDialogBuilder b) ->
+			.execute((b) ->
 				{
 					languages.entrySet().forEach((entry) ->
 					{
