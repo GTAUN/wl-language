@@ -22,11 +22,10 @@ import java.io.File;
 
 import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.player.PlayerLifecycleHolder;
-import net.gtaun.shoebill.event.player.PlayerConnectEvent;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
-import net.gtaun.util.event.HandlerPriority;
 import net.gtaun.wl.lang.dialog.LanguageSelectionDialog;
+import net.gtaun.wl.lang.event.PlayerChangeLanguageEvent;
 
 public class LanguageServiceImpl extends AbstractShoebillContext implements LanguageService
 {
@@ -47,18 +46,18 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 		statistic = new LocalizedStringStatistic();
 		
 		contexts.registerClass(PlayerLanguageContext.class);
-		
-		eventManager.registerHandler(PlayerConnectEvent.class, HandlerPriority.NORMAL, (e) ->
-		{
-			Player player = e.getPlayer();
-			LanguageSelectionDialog.create(player, rootEventManager, this).show();
-		});
 	}
 
 	@Override
 	protected void onDestroy()
 	{
 		
+	}
+	
+	@Override
+	public void showLanguageSelectionDialog(Player player)
+	{
+		LanguageSelectionDialog.create(player, rootEventManager, this).show();
 	}
 
 	@Override
@@ -73,6 +72,7 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	{
 		PlayerLanguageContext context = contexts.getObject(player, PlayerLanguageContext.class);
 		context.setLanguage(lang);
+		eventManager.dispatchEvent(new PlayerChangeLanguageEvent(player, lang), player);
 	}
 
 	@Override
