@@ -24,6 +24,7 @@ import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.player.PlayerLifecycleHolder;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
+import net.gtaun.wl.lang.LanguageService.SelectLanguageCallback;
 import net.gtaun.wl.lang.dialog.LanguageSelectionDialog;
 import net.gtaun.wl.lang.event.PlayerChangeLanguageEvent;
 
@@ -55,9 +56,9 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	}
 	
 	@Override
-	public void showLanguageSelectionDialog(Player player)
+	public void showLanguageSelectionDialog(Player player, SelectLanguageCallback callback)
 	{
-		LanguageSelectionDialog.create(player, rootEventManager, this).show();
+		LanguageSelectionDialog.create(player, rootEventManager, this, callback).show();
 	}
 
 	@Override

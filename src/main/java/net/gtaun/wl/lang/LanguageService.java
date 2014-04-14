@@ -25,7 +25,14 @@ import net.gtaun.shoebill.service.Service;
 
 public interface LanguageService extends Service
 {
-	void showLanguageSelectionDialog(Player player);
+	@FunctionalInterface
+	public interface SelectLanguageCallback
+	{
+		void onSelectLanguage(Player player, Language lang);
+	}
+	
+	
+	void showLanguageSelectionDialog(Player player, SelectLanguageCallback callback);
 	
 	Language getPlayerLanguage(Player player);
 

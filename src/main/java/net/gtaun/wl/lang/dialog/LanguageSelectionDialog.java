@@ -29,10 +29,11 @@ import net.gtaun.wl.common.dialog.WlListDialog;
 import net.gtaun.wl.common.dialog.WlListDialog.WlListDialogBuilder;
 import net.gtaun.wl.lang.Language;
 import net.gtaun.wl.lang.LanguageService;
+import net.gtaun.wl.lang.LanguageService.SelectLanguageCallback;
 
 public class LanguageSelectionDialog
 {
-	public static WlListDialog create(Player player, EventManager rootEventManager, LanguageService service)
+	public static WlListDialog create(Player player, EventManager rootEventManager, LanguageService service, SelectLanguageCallback callback)
 	{
 		Map<Float, Language> languages = new TreeMap<Float, Language>((Float o1, Float o2) -> o1 < o2 ? 1 : -1);
 		Arrays.stream(Language.values()).forEach((lang) ->
@@ -53,8 +54,14 @@ public class LanguageSelectionDialog
 						{
 							player.playSound(1083, player.getLocation());
 							service.setPlayerLanguage(player, lang);
+							callback.onSelectLanguage(player, lang);
 						});
 					});
+				})
+			.onClickCancel((d)->
+				{
+					player.playSound(1083, player.getLocation());
+					d.show();
 				})
 			.build();
 	}
