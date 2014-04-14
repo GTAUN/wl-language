@@ -30,7 +30,7 @@ public class PlayerLanguageContext extends AbstractPlayerContext
 	
 	public PlayerLanguageContext(Shoebill shoebill, EventManager rootEventManager, Player player)
 	{
-		super(shoebill, rootEventManager, player);
+		super(rootEventManager, player);
 	}
 	
 	@Override

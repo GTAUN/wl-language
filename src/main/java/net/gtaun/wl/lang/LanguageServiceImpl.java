@@ -20,14 +20,12 @@ package net.gtaun.wl.lang;
 
 import java.io.File;
 
-import net.gtaun.shoebill.Shoebill;
 import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.player.PlayerLifecycleHolder;
-import net.gtaun.shoebill.event.PlayerEventHandler;
 import net.gtaun.shoebill.event.player.PlayerConnectEvent;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
-import net.gtaun.util.event.EventManager.HandlerPriority;
+import net.gtaun.util.event.HandlerPriority;
 import net.gtaun.wl.lang.dialog.LanguageSelectionDialog;
 
 public class LanguageServiceImpl extends AbstractShoebillContext implements LanguageService
@@ -36,21 +34,25 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	private LocalizedStringStatistic statistic;
 	
 	
-	public LanguageServiceImpl(Shoebill shoebill, EventManager rootEventManager)
+	public LanguageServiceImpl(EventManager rootEventManager)
 	{
-		super(shoebill, rootEventManager);
+		super(rootEventManager);
 		init();
 	}
 
 	@Override
 	protected void onInit()
 	{
-		contexts = new PlayerLifecycleHolder(shoebill, eventManager);
+		contexts = new PlayerLifecycleHolder(eventManager);
 		statistic = new LocalizedStringStatistic();
 		
 		contexts.registerClass(PlayerLanguageContext.class);
 		
-		eventManager.registerHandler(PlayerConnectEvent.class, playerEventHandler, HandlerPriority.NORMAL);
+		eventManager.registerHandler(PlayerConnectEvent.class, HandlerPriority.NORMAL, (e) ->
+		{
+			Player player = e.getPlayer();
+			LanguageSelectionDialog.create(player, rootEventManager, this).show();
+		});
 	}
 
 	@Override
@@ -98,13 +100,4 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	{
 		return statistic.getCoverPercent(lang);
 	}
-	
-	private PlayerEventHandler playerEventHandler = new PlayerEventHandler()
-	{
-		protected void onPlayerConnect(PlayerConnectEvent event)
-		{
-			Player player = event.getPlayer();
-			new LanguageSelectionDialog(player, shoebill, eventManager, null, LanguageServiceImpl.this).show();
-		}
-	};
 }

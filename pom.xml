@@ -18,7 +18,7 @@
 
 	<groupId>net.gtaun.wl</groupId>
 	<artifactId>wl-language</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>wl-language</name>
@@ -26,7 +26,8 @@
 	<url>https://github.com/GTAUN/wl-language</url>
 
 	<properties>
-		<shoebill.version>0.2.0-SNAPSHOT</shoebill.version>
+		<java.version>1.8</java.version>
+		<shoebill.version>1.0-SNAPSHOT</shoebill.version>
 		<build.number>0</build.number>
 	</properties>
 
@@ -64,7 +65,7 @@
 		<dependency>
 			<groupId>net.gtaun</groupId>
 			<artifactId>shoebill-common</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<version>${shoebill.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -72,7 +73,7 @@
 		<dependency>
 			<groupId>net.gtaun.wl</groupId>
 			<artifactId>wl-common</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<version>1.0-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -96,6 +97,16 @@
 
 	<build>
 		<plugins>
+		    <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>

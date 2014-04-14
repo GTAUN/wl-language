@@ -18,60 +18,44 @@
 
 package net.gtaun.wl.lang.dialog;
 
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.gtaun.shoebill.Shoebill;
-import net.gtaun.shoebill.common.dialog.AbstractDialog;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
-import net.gtaun.wl.common.dialog.AbstractListDialog;
 import net.gtaun.wl.common.dialog.DialogUtils;
+import net.gtaun.wl.common.dialog.WlListDialog;
+import net.gtaun.wl.common.dialog.WlListDialog.WlListDialogBuilder;
 import net.gtaun.wl.lang.Language;
 import net.gtaun.wl.lang.LanguageService;
 
-public class LanguageSelectionDialog extends AbstractListDialog
+public class LanguageSelectionDialog
 {
-	public LanguageSelectionDialog(final Player player, Shoebill shoebill, EventManager eventManager, AbstractDialog parentDialog, final LanguageService languageService)
+	public static WlListDialog create(Player player, EventManager rootEventManager, LanguageService service)
 	{
-		super(player, shoebill, eventManager, parentDialog);
-		this.caption = "Please select your language";
-		
-		Map<Float, Language> languages = new TreeMap<Float, Language>(new Comparator<Float>()
+		Map<Float, Language> languages = new TreeMap<Float, Language>((Float o1, Float o2) -> o1 < o2 ? 1 : -1);
+		Arrays.stream(Language.values()).forEach((lang) ->
 		{
-			@Override
-			public int compare(Float o1, Float o2)
-			{
-				return o1 < o2 ? 1 : -1;
-			}
+			float coverPercent = service.getCoverPercent(lang) * 100.0f;
+			languages.put(coverPercent, lang);
 		});
-		for (final Language lang : Language.values())
-		{
-			languages.put(languageService.getCoverPercent(lang) - (lang.ordinal() / 1000000.0f), lang);
-		}
 		
-		for (final Language lang : languages.values())
-		{
-			final float coverPercent = languageService.getCoverPercent(lang) * 100.0f;
-			String item = String.format("%1$s(%2$s, %3$1.1f%%)",
-					DialogUtils.rightPad(lang.getNativeCp1252()+" ", 16, 8), lang.getName(), coverPercent);
-			dialogListItems.add(new DialogListItem(item)
-			{
-				@Override
-				public void onItemSelect()
+		return WlListDialog.create(player, rootEventManager)
+			.caption("Please select your language")
+			.execute((WlListDialogBuilder b) ->
 				{
-					player.playSound(1083, player.getLocation());
-					languageService.setPlayerLanguage(player, lang);
-				}
-			});
-		}
-	}
-	
-	@Override
-	protected void onClickCancel()
-	{
-		super.onClickCancel();
-		show();
+					languages.entrySet().forEach((entry) ->
+					{
+						Language lang = entry.getValue();
+						String itemText = String.format("%1$s(%2$s, %3$1.1f%%)", DialogUtils.rightPad(lang.getNativeCp1252()+" ", 16, 8), lang.getName(), entry.getKey());
+						b.item(itemText, (d) ->
+						{
+							player.playSound(1083, player.getLocation());
+							service.setPlayerLanguage(player, lang);
+						});
+					});
+				})
+			.build();
 	}
 }

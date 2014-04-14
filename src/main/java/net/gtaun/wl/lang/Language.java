@@ -40,7 +40,7 @@ public enum Language
 	SWEDISH				("SVE", 1252,	"Swedish",				"Svenska",		"Svenska",		"ENG"),
 	POLISH				("PLK", 1250,	"Polish",				"Polski",		"Polski",		"ENG"),
 	ROMANIAN			("ROM", 1250,	"Romanian",				"Română",		"Română",		"ENG"),
-	KOREAN				("KOR", 949,	"Korean",				"ÇÑ±¹¾î",		"한국어",		"ENG"),
+	KOREAN				("KOR", 949,	"Korean",				"ÇÑ±¹¾î",		"한국어",			"ENG"),
 	JAPANESE			("JPN", 932,	"Japanese",				"“ú–{Œê",		"日本語",		"ENG"),
 	THAI				("THA", 874,	"Thai",					"ä·Â",			"ไทย",			"ENG");
 	

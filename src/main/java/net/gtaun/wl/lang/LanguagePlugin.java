@@ -39,7 +39,7 @@ public class LanguagePlugin extends Plugin
 	@Override
 	protected void onEnable() throws Throwable
 	{
-		serivce = new LanguageServiceImpl(getShoebill(), getEventManager());
+		serivce = new LanguageServiceImpl(getEventManager());
 		registerService(LanguageService.class, serivce);
 		
 		LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " Enabled.");
