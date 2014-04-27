@@ -44,7 +44,7 @@ public class LanguageSelectionDialog
 		
 		return WlListDialog.create(player, rootEventManager)
 			.caption("Please select your language")
-			.execute((b) ->
+			.execute((WlListDialogBuilder b) ->
 				{
 					languages.entrySet().forEach((entry) ->
 					{

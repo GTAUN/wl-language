@@ -132,12 +132,7 @@ public class LocalizedStringSet
 
 	public PlayerStringSet getStringSet(Player player)
 	{
-		return new PlayerStringSet(player, null);
-	}
-	
-	public PlayerStringSet getStringSet(Player player, String prefix)
-	{
-		return new PlayerStringSet(player, prefix);
+		return new PlayerStringSet(player);
 	}
 	
 	public int getStrings(Language lang)
