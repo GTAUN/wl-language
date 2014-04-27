@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.gtaun.shoebill.data.Color;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.shoebill.util.config.Configuration;
 import net.gtaun.shoebill.util.config.FileConfiguration;
@@ -16,6 +17,48 @@ import net.gtaun.shoebill.util.config.YamlConfiguration;
 
 public class LocalizedStringSet
 {
+	public class PlayerStringSet
+	{
+		private final Player player;
+		
+		private PlayerStringSet(Player player)
+		{
+			this.player = player;
+		}
+		
+		public LocalizedStringSet getLocalizedStringSet()
+		{
+			return LocalizedStringSet.this;
+		}
+		
+		public PlayerStringSet forOthers(Player player)
+		{
+			return new PlayerStringSet(player);
+		}
+		
+		public String get(String key)
+		{
+			return LocalizedStringSet.this.get(languageService.getPlayerLanguage(player), key);
+		}
+		
+		public String format(String key, Object... objects)
+		{
+			String format = LocalizedStringSet.this.get(player, key);
+			return String.format(format, objects);
+		}
+		
+		public void sendClientMessage(Color color, String key)
+		{
+			player.sendMessage(color, get(key));
+		}
+		
+		public void sendMessage(Color color, String key, Object... objects)
+		{
+			player.sendMessage(color, get(key), objects);
+		}
+	}
+	
+	
 	private static final Pattern REF_REGEX = Pattern.compile("#[A-Z0-9_.]+#", Pattern.CASE_INSENSITIVE);
 
 	
@@ -85,6 +128,16 @@ public class LocalizedStringSet
 	{
 		String format = get(player, key);
 		return String.format(format, objects);
+	}
+
+	public PlayerStringSet getStringSet(Player player)
+	{
+		return new PlayerStringSet(player, null);
+	}
+	
+	public PlayerStringSet getStringSet(Player player, String prefix)
+	{
+		return new PlayerStringSet(player, prefix);
 	}
 	
 	public int getStrings(Language lang)
