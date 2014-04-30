@@ -18,11 +18,11 @@
 
 package net.gtaun.wl.lang;
 
-import net.gtaun.shoebill.common.player.AbstractPlayerContext;
+import net.gtaun.shoebill.common.player.PlayerLifecycleObject;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
 
-public class PlayerLanguageContext extends AbstractPlayerContext
+public class PlayerLanguageContext extends PlayerLifecycleObject
 {
 	private Language language;
 	
