@@ -42,7 +42,7 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	@Override
 	protected void onInit()
 	{
-		contexts = new PlayerLifecycleHolder(eventManager);
+		contexts = new PlayerLifecycleHolder(eventManagerNode);
 		statistic = new LocalizedStringStatistic();
 		
 		contexts.registerClass(PlayerLanguageContext.class);
@@ -72,7 +72,7 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	{
 		PlayerLanguageContext context = contexts.getObject(player, PlayerLanguageContext.class);
 		context.setLanguage(lang);
-		eventManager.dispatchEvent(new PlayerChangeLanguageEvent(player, lang), player);
+		eventManagerNode.dispatchEvent(new PlayerChangeLanguageEvent(player, lang), player);
 	}
 
 	@Override
