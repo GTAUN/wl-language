@@ -51,7 +51,7 @@ public class LanguageSelectionDialog
 						String itemText = String.format("%1$s(%2$s, %3$1.1f%%)", DialogUtils.rightPad(lang.getNativeCp1252()+" ", 16, 8), lang.getName(), entry.getKey());
 						b.item(itemText, (d) ->
 						{
-							player.playSound(1083, player.getLocation());
+							player.playSound(1083);
 							service.setPlayerLanguage(player, lang);
 							if (callback != null) callback.onSelectLanguage(player, lang);
 						});
@@ -59,7 +59,7 @@ public class LanguageSelectionDialog
 				})
 			.onClickCancel((d)->
 				{
-					player.playSound(1083, player.getLocation());
+					player.playSound(1083);
 					d.show();
 				})
 			.build();
