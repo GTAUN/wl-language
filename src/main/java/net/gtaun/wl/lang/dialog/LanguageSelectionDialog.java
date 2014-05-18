@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.gtaun.shoebill.common.dialog.ListDialog.AbstractListDialogBuilder;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
 import net.gtaun.wl.common.dialog.DialogUtils;
@@ -44,24 +45,26 @@ public class LanguageSelectionDialog
 		return WlListDialog.create(player, rootEventManager)
 			.caption("Please select your language")
 			.execute((b) ->
+			{
+				languages.entrySet().forEach((entry) ->
 				{
-					languages.entrySet().forEach((entry) ->
+					Language lang = entry.getValue();
+					String itemText = String.format("%1$s(%2$s, %3$1.1f%%)", DialogUtils.rightPad(lang.getNativeCp1252()+" ", 16, 8), lang.getName(), entry.getKey());
+					
+					// XXX: Buggy Eclipse JDT Compiler
+					((AbstractListDialogBuilder<?, ?>) b).item(itemText, (d) ->
 					{
-						Language lang = entry.getValue();
-						String itemText = String.format("%1$s(%2$s, %3$1.1f%%)", DialogUtils.rightPad(lang.getNativeCp1252()+" ", 16, 8), lang.getName(), entry.getKey());
-						b.item(itemText, (d) ->
-						{
-							player.playSound(1083);
-							service.setPlayerLanguage(player, lang);
-							if (callback != null) callback.onSelectLanguage(player, lang);
-						});
+						player.playSound(1083);
+						service.setPlayerLanguage(player, lang);
+						if (callback != null) callback.onSelectLanguage(player, lang);
 					});
-				})
+				});
+			})
 			.onClickCancel((d)->
-				{
-					player.playSound(1083);
-					d.show();
-				})
+			{
+				player.playSound(1083);
+				d.show();
+			})
 			.build();
 	}
 }
