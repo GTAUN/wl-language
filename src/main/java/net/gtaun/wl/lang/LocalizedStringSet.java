@@ -47,7 +47,7 @@ public class LocalizedStringSet
 			return String.format(format, objects);
 		}
 		
-		public void sendClientMessage(Color color, String key)
+		public void sendMessage(Color color, String key)
 		{
 			player.sendMessage(color, get(key));
 		}
