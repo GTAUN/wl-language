@@ -25,30 +25,31 @@ import net.gtaun.util.event.EventManager;
 public class PlayerLanguageContext extends PlayerLifecycleObject
 {
 	private Language language;
-	
-	
+
+
 	public PlayerLanguageContext(EventManager rootEventManager, Player player)
 	{
 		super(rootEventManager, player);
+		language = Language.ENGLISH;
 	}
-	
+
 	@Override
 	protected void onInit()
 	{
-		
+
 	}
-	
+
 	@Override
 	protected void onDestroy()
 	{
-		
+
 	}
-	
+
 	public Language getLanguage()
 	{
 		return language;
 	}
-	
+
 	public void setLanguage(Language lang)
 	{
 		this.language = lang;
