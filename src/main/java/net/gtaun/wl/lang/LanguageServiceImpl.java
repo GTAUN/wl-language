@@ -51,7 +51,7 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	@Override
 	protected void onDestroy()
 	{
-		
+
 	}
 	
 	@Override
