@@ -18,11 +18,6 @@
 
 package net.gtaun.wl.lang.dialog;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
-
-import net.gtaun.shoebill.common.dialog.ListDialog.AbstractListDialogBuilder;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
 import net.gtaun.wl.common.dialog.DialogUtils;
@@ -31,11 +26,16 @@ import net.gtaun.wl.lang.Language;
 import net.gtaun.wl.lang.LanguageService;
 import net.gtaun.wl.lang.LanguageService.SelectLanguageCallback;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
+
+
 public class LanguageSelectionDialog
 {
 	public static WlListDialog create(Player player, EventManager rootEventManager, LanguageService service, SelectLanguageCallback callback)
 	{
-		Map<Float, Language> languages = new TreeMap<Float, Language>((Float o1, Float o2) -> o1 < o2 ? 1 : -1);
+		Map<Float, Language> languages = new TreeMap<>((Float o1, Float o2) -> o1 < o2 ? 1 : -1);
 		Arrays.stream(Language.values()).forEach((lang) ->
 		{
 			float coverPercent = service.getCoverPercent(lang) * 100.0f;
@@ -49,10 +49,9 @@ public class LanguageSelectionDialog
 				languages.entrySet().forEach((entry) ->
 				{
 					Language lang = entry.getValue();
-					String itemText = String.format("%1$s(%2$s, %3$1.1f%%)", DialogUtils.rightPad(lang.getNativeCp1252()+" ", 16, 8), lang.getName(), entry.getKey());
-					
-					// XXX: Buggy Eclipse JDT Compiler
-					((AbstractListDialogBuilder<?, ?>) b).item(itemText, (d) ->
+					String itemText = String.format("%1$s(%2$s, %3$1.1f%%)", DialogUtils.rightPad(lang.getNativeCp1252() + " ", 16, 8), lang.getName(), entry.getKey());
+
+					b.item(itemText, (d) ->
 					{
 						player.playSound(1083);
 						service.setPlayerLanguage(player, lang);

@@ -26,23 +26,16 @@ import org.slf4j.LoggerFactory;
 public class LanguagePlugin extends Plugin
 {
 	public static final Logger LOGGER = LoggerFactory.getLogger(LanguagePlugin.class);
-	
-	
-	private LanguageServiceImpl serivce;
-	
-	
-	public LanguagePlugin()
-	{
-		
-	}
-	
+
+	private LanguageServiceImpl service;
+
 	@Override
 	protected void onEnable() throws Throwable
 	{
-		serivce = new LanguageServiceImpl(getEventManager());
-		registerService(LanguageService.class, serivce);
+		service = new LanguageServiceImpl(getEventManager());
+		registerService(LanguageService.class, service);
 		
-		LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " Enabled.");
+		LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " enabled.");
 	}
 	
 	@Override
@@ -50,9 +43,9 @@ public class LanguagePlugin extends Plugin
 	{
 		unregisterService(LanguageService.class);
 		
-		serivce.destroy();
-		serivce = null;
+		service.destroy();
+		service = null;
 		
-		LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " Disabled.");
+		LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " disabled.");
 	}
 }
