@@ -5,41 +5,41 @@ This project is a part of the New WL-World Project. For further information, ple
 
 # How to use this?
 
-1. Add the dependency for this plugin to your Gamemode’s pom.xml file:
+* Add the dependency for this plugin to your Gamemode’s pom.xml file:
 ```xml
 <dependency>
-	<groupId>net.gtaun.wl</groupId>
+  	<groupId>net.gtaun.wl</groupId>
 	<artifactId>wl-language</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<type>jar</type>
 	<scope>compile</scope>
 </dependency>
 ```
-2. In your Gamemode, use the following Code to get the plugin’s service:
+* In your Gamemode, use the following Code to get the plugin’s service:
 ```java
 LanguageService languageService = Service.get(LanguageService.class);
 ```
-3. When you got your LanguageService instance, you can use the ```createStringSet()``` method from the LanguageService interface. You will have to give a path to a directory, which contains your language files. Language files are in the YAML (.yml) format, and should start with the 3-letter-Abbreviation of the language ([Abbreviation list](http://www.abbreviations.com/acronyms/LANGUAGES3L)). If you want to create a language file for the English language, you will have to create a file called ENG.yml in your language folder you specified in the ```createStringSet()``` method. An example usage of the ```createStringSet()``` method would look like this:
+* When you got your LanguageService instance, you can use the ```createStringSet()``` method from the LanguageService interface. You will have to give a path to a directory, which contains your language files. Language files are in the YAML (.yml) format, and should start with the 3-letter-Abbreviation of the language ([Abbreviation list](http://www.abbreviations.com/acronyms/LANGUAGES3L)). If you want to create a language file for the English language, you will have to create a file called ENG.yml in your language folder you specified in the ```createStringSet()``` method. An example usage of the ```createStringSet()``` method would look like this:
 ```java
 localizedStringSet = languageService.createStringSet(new File(getDataDir(), "text")); //points to the plugin's data dir -> text
 ```
-4. If you haven’t created a language file yet, this is how to do it:
-	1. Create an .yml file with the 3-Letter-Abbreviation of your target language (e.g. ENG.yml) in your language folder you specified in the ```createStringSet()``` method.
-	2. Add your text like this (make sure you add 2 whitespaces after your catgory definition (e.g. „LoginDialog“)):
+* If you haven’t created a language file yet, this is how to do it:
+	* Create an .yml file with the 3-Letter-Abbreviation of your target language (e.g. ENG.yml) in your language folder you specified in the ```createStringSet()``` method.
+	* Add your text like this (make sure you add 2 whitespaces after your catgory definition (e.g. „LoginDialog“)):
   ```yml
-	LoginDialog:
-  Information: “Welcome to my server, please login:“
-  Login: “Login“
-  Quit: “Quit“
+  LoginDialog:
+    Information: “Welcome to my server, please login:“
+    Login: “Login“
+    Quit: “Quit“
   ```
-5. You can access your StringSet like this:
+* You can access your StringSet like this:
 ```java
 String welcomeMessage = localizedStringSet.get(player,„LoginDialog.Information“); //would return the welcome message in the player’s language
 ```
 You can also directly use the ```format()``` method. This will replace the placeholders in your sentence. These placeholders are normal placeholders which are also beeing used in ```String.format();```
 
-6. If you want to change the player’s language, you can use the LanguageService’s method ```languageService.setPlayerLanguage();``` or show the player a generated ListDialog with available languages, including their total coverage by using this method: ```languageService.showLanguageSelectionDialog();```
-7. You also want to add the plugin to the resources.yml file in the shoebill directory at the plugins section. Otherwise, you will get an exception at runtime, because the LanguageService will not be loaded.
+* If you want to change the player’s language, you can use the LanguageService’s method ```languageService.setPlayerLanguage();``` or show the player a generated ListDialog with available languages, including their total coverage by using this method: ```languageService.showLanguageSelectionDialog();```
+* You also want to add the plugin to the resources.yml file in the shoebill directory at the plugins section. Otherwise, you will get an exception at runtime, because the LanguageService will not be loaded.
 
 # OPEN SOURCE LICENSE
 
