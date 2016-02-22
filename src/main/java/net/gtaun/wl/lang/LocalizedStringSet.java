@@ -7,6 +7,9 @@ import net.gtaun.shoebill.util.config.FileConfiguration;
 import net.gtaun.shoebill.util.config.YamlConfiguration;
 
 import java.io.File;
+import java.text.ChoiceFormat;
+import java.text.Format;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,6 +79,22 @@ public class LocalizedStringSet {
         return format(languageService.getPlayerLanguage(player), key, objects);
     }
 
+    public String choice(Language language, String key, Object... objects) {
+        String choice = get(language, key);
+        choice = String.format(choice, objects);
+        choice = searchColorCodes(choice, "\\{", "\\}", true);
+        MessageFormat messageFormat = new MessageFormat(choice);
+        ChoiceFormat choiceFormat = applyFormats(messageFormat);
+        messageFormat.setFormatByArgumentIndex(0, choiceFormat);
+        choice = messageFormat.format(objects);
+        choice = searchColorCodes(choice, "\\{", "\\}", false);
+        return choice;
+    }
+
+    public String choice(Player player, String key, Object... objects) {
+        return choice(languageService.getPlayerLanguage(player), key, objects);
+    }
+
     public PlayerStringSet getStringSet(Player player) {
         return new PlayerStringSet(player);
     }
@@ -112,12 +131,66 @@ public class LocalizedStringSet {
             return String.format(format, objects);
         }
 
+        public String choice(String key, Object... objects) {
+            String choice = LocalizedStringSet.this.get(player, key);
+            choice = String.format(choice, objects);
+            choice = searchColorCodes(choice, "\\{", "\\}", true);
+            MessageFormat messageFormat = new MessageFormat(choice);
+            ChoiceFormat choiceFormat = applyFormats(messageFormat);
+            messageFormat.setFormatByArgumentIndex(0, choiceFormat);
+            choice = messageFormat.format(objects);
+            choice = searchColorCodes(choice, "\\{", "\\}", false);
+            return choice;
+        }
+
         public void sendMessage(Color color, String key) {
             player.sendMessage(color, get(key));
         }
 
         public void sendMessage(Color color, String key, Object... objects) {
             player.sendMessage(color, get(key), objects);
+        }
+    }
+
+    //apply format for choices
+    private ChoiceFormat applyFormats(MessageFormat subFormat) {
+        for(Format format : subFormat.getFormats()) {
+            if(!(format instanceof ChoiceFormat)) {
+                continue;
+            }
+
+            ChoiceFormat choice = (ChoiceFormat) format;
+            String[] choiceFormats = (String[]) choice.getFormats();
+            for(int i = 0; i < choiceFormats.length; i++) {
+                String innerFormat = choiceFormats[i];
+                if(innerFormat.contains("{")) {
+                    BeanMessageFormat recursive = new BeanMessageFormat(innerFormat);
+                    choiceFormats[i] = recursive.inner.toPattern();
+                }
+            }
+
+            choice.setChoices(choice.getLimits(), choiceFormats);
+            return choice;
+        }
+        return null;
+    }
+
+    public String searchColorCodes(String text, String start, String end, boolean pack) {
+        if(pack) {
+            Pattern p = Pattern.compile("(?<=" + start + ")[ABCDEF0-9]{6}(?=" + end + ")");
+            Matcher m = p.matcher(text);
+            while (m.find()) {
+                text = text.replaceAll(start + m.group() + end, "#" + m.group());
+            }
+            return text;
+        }
+        else {
+            Pattern p = Pattern.compile("(?<=#)[ABCDEF0-9]{6}");
+            Matcher m = p.matcher(text);
+            while(m.find()) {
+                text = text.replaceAll("#" + m.group(), start + m.group() + end);
+            }
+            return text;
         }
     }
 }
