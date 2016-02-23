@@ -81,13 +81,20 @@ public class LocalizedStringSet {
 
     public String choice(Language language, String key, Object... objects) {
         String choice = get(language, key);
+        choice = replaceObjectCodes(choice, "\\{", "\\}");
         choice = String.format(choice, objects);
-        choice = searchColorCodes(choice, "\\{", "\\}", true);
+        choice = replaceColorCodes(choice, "\\{", "\\}", true);
         MessageFormat messageFormat = new MessageFormat(choice);
         ChoiceFormat choiceFormat = applyFormats(messageFormat);
-        messageFormat.setFormatByArgumentIndex(0, choiceFormat);
+        if(choiceFormat != null) {
+            messageFormat.setFormatByArgumentIndex(0, choiceFormat);
+        }
+        for(int i = 0; i < objects.length; i++) {
+            if(!(objects[i] instanceof Number))
+                objects[i] = 0;
+        }
         choice = messageFormat.format(objects);
-        choice = searchColorCodes(choice, "\\{", "\\}", false);
+        choice = replaceColorCodes(choice, "\\{", "\\}", false);
         return choice;
     }
 
@@ -133,13 +140,14 @@ public class LocalizedStringSet {
 
         public String choice(String key, Object... objects) {
             String choice = LocalizedStringSet.this.get(player, key);
+            choice = replaceObjectCodes(choice, "\\{", "\\}");
             choice = String.format(choice, objects);
-            choice = searchColorCodes(choice, "\\{", "\\}", true);
+            choice = replaceColorCodes(choice, "\\{", "\\}", true);
             MessageFormat messageFormat = new MessageFormat(choice);
             ChoiceFormat choiceFormat = applyFormats(messageFormat);
             messageFormat.setFormatByArgumentIndex(0, choiceFormat);
             choice = messageFormat.format(objects);
-            choice = searchColorCodes(choice, "\\{", "\\}", false);
+            choice = replaceColorCodes(choice, "\\{", "\\}", false);
             return choice;
         }
 
@@ -175,7 +183,7 @@ public class LocalizedStringSet {
         return null;
     }
 
-    public String searchColorCodes(String text, String start, String end, boolean pack) {
+    public String replaceColorCodes(String text, String start, String end, boolean pack) {
         if(pack) {
             Pattern p = Pattern.compile("(?<=" + start + ")[ABCDEF0-9]{6}(?=" + end + ")");
             Matcher m = p.matcher(text);
@@ -192,5 +200,19 @@ public class LocalizedStringSet {
             }
             return text;
         }
+    }
+
+    public static String replaceObjectCodes(String text, String anfang, String ende) {
+        Pattern p = Pattern.compile("(?<="+anfang+")[%]\\d[$]\\w.*(?="+ende+")");
+        Matcher m = p.matcher(text);
+
+        while(m.find()) {
+            Pattern p2 = Pattern.compile("[%]\\d*[$]\\w");
+            Matcher m2 = p2.matcher(m.group());
+            while(m2.find()) {
+                text = text.replace(m2.group(), (Integer.parseInt(m2.group().trim().substring(1, m2.group().length()-2))-1) + ", choice");
+            }
+        }
+        return text;
     }
 }
