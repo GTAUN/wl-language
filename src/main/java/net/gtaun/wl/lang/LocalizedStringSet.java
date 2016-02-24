@@ -58,9 +58,19 @@ public class LocalizedStringSet {
         String str = configs.get(lang).getString(key, null);
         if (str != null) return processString(lang, str);
 
-        for (Language subLang : lang.getSubstitutes()) {
-            str = configs.get(subLang).getString(key, null);
-            if (str != null) return processString(lang, str);
+        Language fallbackLanguage = languageService.getFallbackLanguage();
+        if(fallbackLanguage != lang) {
+            str = configs.get(fallbackLanguage).getString(key, null);
+            if (str != null) return processString(fallbackLanguage, str);
+        }
+
+        if(languageService.isAutoSubFallbackLanguages()) {
+            for (Language subLang : lang.getSubstitutes()) {
+                if (subLang == lang || subLang == fallbackLanguage)
+                    continue;
+                str = configs.get(subLang).getString(key, null);
+                if (str != null) return processString(lang, str);
+            }
         }
 
         return "#" + key + "#";
@@ -84,16 +94,19 @@ public class LocalizedStringSet {
         choice = replaceObjectCodes(choice, "\\{", "\\}");
         choice = String.format(choice, objects);
         choice = replaceColorCodes(choice, "\\{", "\\}", true);
-        MessageFormat messageFormat = new MessageFormat(choice);
-        ChoiceFormat choiceFormat = applyFormats(messageFormat);
-        if(choiceFormat != null) {
-            messageFormat.setFormatByArgumentIndex(0, choiceFormat);
+        try {
+            MessageFormat messageFormat = new MessageFormat(choice);
+            ChoiceFormat choiceFormat = applyFormats(messageFormat);
+            if(choiceFormat != null)
+                messageFormat.setFormatByArgumentIndex(0, choiceFormat);
+            for(int i = 0; i < objects.length; i++) {
+                if(!(objects[i] instanceof Number))
+                    objects[i] = 0;
+            }
+            choice = messageFormat.format(objects);
+        } catch(Exception e) {
+            System.out.println(e + " for key: " + key + "( '" + get(language, key) + "' )");
         }
-        for(int i = 0; i < objects.length; i++) {
-            if(!(objects[i] instanceof Number))
-                objects[i] = 0;
-        }
-        choice = messageFormat.format(objects);
         choice = replaceColorCodes(choice, "\\{", "\\}", false);
         return choice;
     }
@@ -143,12 +156,25 @@ public class LocalizedStringSet {
             choice = replaceObjectCodes(choice, "\\{", "\\}");
             choice = String.format(choice, objects);
             choice = replaceColorCodes(choice, "\\{", "\\}", true);
-            MessageFormat messageFormat = new MessageFormat(choice);
-            ChoiceFormat choiceFormat = applyFormats(messageFormat);
-            messageFormat.setFormatByArgumentIndex(0, choiceFormat);
-            choice = messageFormat.format(objects);
+            try {
+                MessageFormat messageFormat = new MessageFormat(choice);
+                ChoiceFormat choiceFormat = applyFormats(messageFormat);
+                if(choiceFormat != null)
+                    messageFormat.setFormatByArgumentIndex(0, choiceFormat);
+                for(int i = 0; i < objects.length; i++) {
+                    if(!(objects[i] instanceof Number))
+                        objects[i] = 0;
+                }
+                choice = messageFormat.format(objects);
+            } catch(Exception e) {
+                System.out.println(e + " for key: " + key + "( '" + LocalizedStringSet.this.get(player, key) + "' )");
+            }
             choice = replaceColorCodes(choice, "\\{", "\\}", false);
             return choice;
+        }
+
+        public void sendMessage(String key) {
+            player.sendMessage(get(key));
         }
 
         public void sendMessage(Color color, String key) {
@@ -163,12 +189,11 @@ public class LocalizedStringSet {
     //apply format for choices
     private ChoiceFormat applyFormats(MessageFormat subFormat) {
         for(Format format : subFormat.getFormats()) {
-            if(!(format instanceof ChoiceFormat)) {
+            if(!(format instanceof ChoiceFormat))
                 continue;
-            }
-
             ChoiceFormat choice = (ChoiceFormat) format;
             String[] choiceFormats = (String[]) choice.getFormats();
+
             for(int i = 0; i < choiceFormats.length; i++) {
                 String innerFormat = choiceFormats[i];
                 if(innerFormat.contains("{")) {
@@ -176,7 +201,6 @@ public class LocalizedStringSet {
                     choiceFormats[i] = recursive.inner.toPattern();
                 }
             }
-
             choice.setChoices(choice.getLimits(), choiceFormats);
             return choice;
         }
@@ -187,6 +211,7 @@ public class LocalizedStringSet {
         if(pack) {
             Pattern p = Pattern.compile("(?<=" + start + ")[ABCDEF0-9]{6}(?=" + end + ")");
             Matcher m = p.matcher(text);
+
             while (m.find()) {
                 text = text.replaceAll(start + m.group() + end, "#" + m.group());
             }
@@ -195,6 +220,7 @@ public class LocalizedStringSet {
         else {
             Pattern p = Pattern.compile("(?<=#)[ABCDEF0-9]{6}");
             Matcher m = p.matcher(text);
+
             while(m.find()) {
                 text = text.replaceAll("#" + m.group(), start + m.group() + end);
             }
@@ -203,16 +229,24 @@ public class LocalizedStringSet {
     }
 
     public static String replaceObjectCodes(String text, String anfang, String ende) {
-        Pattern p = Pattern.compile("(?<="+anfang+")[%]\\d[$]\\w.*(?="+ende+")");
+        Pattern p = Pattern.compile("(?<="+anfang+")\\s*[%]\\d[$]\\w.*(?="+ende+")");
         Matcher m = p.matcher(text);
+        StringBuffer sb = new StringBuffer(text.length());
 
         while(m.find()) {
             Pattern p2 = Pattern.compile("[%]\\d*[$]\\w");
             Matcher m2 = p2.matcher(m.group());
+            text = text.replace(m.group(), m.group().trim());
+            StringBuffer sb2 = new StringBuffer(text.length());
+
             while(m2.find()) {
-                text = text.replace(m2.group(), (Integer.parseInt(m2.group().trim().substring(1, m2.group().length()-2))-1) + ", choice");
+                String group = m2.group().trim();
+                group = (Integer.parseInt(group.trim().substring(1, group.trim().length()-2).trim())-1) + ",choice";
+                m2.appendReplacement(sb2, Matcher.quoteReplacement(group));
             }
+            String tmp = m2.appendTail(sb2).toString().trim();
+            m.appendReplacement(sb, Matcher.quoteReplacement(tmp));
         }
-        return text;
+        return m.appendTail(sb).toString();
     }
 }

@@ -37,6 +37,14 @@ public interface LanguageService extends Service
 	Language getPlayerLanguage(Player player);
 
 	void setPlayerLanguage(Player player, Language lang);
+
+	Language getFallbackLanguage();
+
+	void setFallbackLanguage(Language lang);
+
+	boolean isAutoSubFallbackLanguages();
+
+	void toggleAutoSubFallbackLanguages(boolean enable);
 	
 	LocalizedStringSet createStringSet(File dir);
 	
