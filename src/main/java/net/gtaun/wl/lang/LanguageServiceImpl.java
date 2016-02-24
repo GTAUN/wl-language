@@ -76,6 +76,24 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	}
 
 	@Override
+	public Language getFallbackLanguage()
+	{
+		return statistic.getFallbackLanguage();
+	}
+
+	@Override
+	public void setFallbackLanguage(Language lang)
+	{
+		statistic.setFallbackLanguage(lang);
+	}
+
+	@Override
+	public boolean isAutoSubFallbackLanguages() { return  statistic.isAutoSubFallbackLanguages(); }
+
+	@Override
+	public void toggleAutoSubFallbackLanguages(boolean enable) { statistic.toggleAutoSubFallbackLanguages(enable); }
+
+	@Override
 	public LocalizedStringSet createStringSet(File dir)
 	{
 		LocalizedStringSet stringSet = new LocalizedStringSet(this, dir);
