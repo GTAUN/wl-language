@@ -34,7 +34,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<shoebill.version>1.2-SNAPSHOT</shoebill.version>
+		<shoebill.version>1.3-SNAPSHOT</shoebill.version>
 		<build.number>0</build.number>
 	</properties>
 
@@ -64,7 +64,7 @@
 	</developers>
 
 	<ciManagement>
-		<system>jenkins</system>
+		<system>teamcity</system>
 		<url>http://ci.gtaun.net</url>
 	</ciManagement>
 
@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>net.gtaun.wl</groupId>
 			<artifactId>wl-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.1-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
