@@ -18,14 +18,14 @@
 
 package net.gtaun.wl.lang;
 
-import java.io.File;
-
 import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.player.PlayerLifecycleHolder;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.util.event.EventManager;
 import net.gtaun.wl.lang.dialog.LanguageSelectionDialog;
 import net.gtaun.wl.lang.event.PlayerChangeLanguageEvent;
+
+import java.io.File;
 
 public class LanguageServiceImpl extends AbstractShoebillContext implements LanguageService
 {
@@ -51,13 +51,13 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 	@Override
 	protected void onDestroy()
 	{
-		
+
 	}
 	
 	@Override
 	public void showLanguageSelectionDialog(Player player, SelectLanguageCallback callback)
 	{
-		LanguageSelectionDialog.create(player, rootEventManager, this, callback).show();
+		LanguageSelectionDialog.create(player, parentEventManager, this, callback).show();
 	}
 
 	@Override
@@ -74,6 +74,24 @@ public class LanguageServiceImpl extends AbstractShoebillContext implements Lang
 		context.setLanguage(lang);
 		eventManagerNode.dispatchEvent(new PlayerChangeLanguageEvent(player, lang), player);
 	}
+
+	@Override
+	public Language getFallbackLanguage()
+	{
+		return statistic.getFallbackLanguage();
+	}
+
+	@Override
+	public void setFallbackLanguage(Language lang)
+	{
+		statistic.setFallbackLanguage(lang);
+	}
+
+	@Override
+	public boolean isAutoSubFallbackLanguages() { return  statistic.isAutoSubFallbackLanguages(); }
+
+	@Override
+	public void toggleAutoSubFallbackLanguages(boolean enable) { statistic.toggleAutoSubFallbackLanguages(enable); }
 
 	@Override
 	public LocalizedStringSet createStringSet(File dir)
